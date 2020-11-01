@@ -17,7 +17,7 @@ module.exports = (appInfo) => {
 
 
   // add your middleware config here
-  config.middleware = ['errorHandler']
+  config.middleware = ['errorHandler'];
 
 
   // add your user config here
@@ -47,7 +47,7 @@ module.exports = (appInfo) => {
   config.sequelize = {
     dialect: 'mysql',
     host: '127.0.0.1',
-    username: 'root',
+    username: "root",
     password: 'root',
     port: 3306,
     database: 'live_stream',
@@ -64,9 +64,9 @@ module.exports = (appInfo) => {
       updatedAt: 'updated_time',
       // deletedAt: 'deleted_time',
       // 所有驼峰命名格式化
-      underscored: true,
-    },
-  }
+      underscored: true
+    }
+  };
 
 
   config.valparams = {
