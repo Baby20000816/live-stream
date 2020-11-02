@@ -4,6 +4,7 @@
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
+const NodeMediaServer = require('node-media-server');
 module.exports = (appInfo) => {
   /**
    * built-in config
@@ -20,7 +21,7 @@ module.exports = (appInfo) => {
   config.middleware = ['errorHandler', 'auth']
   
   config.auth = {
-    match: ['/api/live/create'],
+    match: ['/api/live/create','/api/live/changestatus','/api/user/info','/api/logout'],
   }
 
   // add your user config here
@@ -28,6 +29,26 @@ module.exports = (appInfo) => {
     // myAppName: 'egg',
   }
 
+  config.mediaServer ={
+    rtmp:{
+      port: 23480,
+      chunk_size: 60000,
+      gop_cache: true,
+      ping: 30,
+      ping_timeout: 60,
+    },
+    http: {
+      port: 23481,
+      allow_origin: '*',
+    },
+    auth: {
+      play: true,
+      publish: true,
+      secret: 'nodemedia2017privatekey',
+    },
+  }
+  var nms = new NodeMediaServer(config.mediaServer)
+  nms.run();
 
   config.security = {
     // 关闭 csrf
