@@ -12,7 +12,6 @@ module.exports = (appInfo) => {
    **/
   const config = (exports = {})
 
-
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1604226229644_5400'
 
@@ -66,8 +65,6 @@ module.exports = (appInfo) => {
     origin: '*',
     allowMethods: 'GET, PUT, POST, DELETE, PATCH',
   }
-
-
   config.sequelize = {
     dialect: 'mysql',
     host: '127.0.0.1',
@@ -118,26 +115,6 @@ module.exports = (appInfo) => {
       db: 2,
     },
   }
-  
-  // 流媒体配置
-  config.mediaServer = {
-    rtmp: {
-      port: 23480,
-      chunk_size: 60000,
-      gop_cache: true,
-      ping: 30,
-      ping_timeout: 60
-    },
-    http: {
-      port: 23481,
-      allow_origin: '*'
-    },
-    auth: {
-      play: true,
-      publish: true,
-      secret: 'nodemedia2017privatekey',
-    },
-  };
 
   return {
     ...config,

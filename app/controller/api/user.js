@@ -89,7 +89,7 @@ class UserController extends Controller {
 
     let user = await app.model.User.findOne({
       where: {
-        username,
+        username
       },
     })
 
@@ -138,6 +138,106 @@ class UserController extends Controller {
     const { ctx } = this
     let user = JSON.parse(JSON.stringify(ctx.authUser)) 
     delete user.password
+    ctx.apiSuccess(user)
+  }
+
+  // 手机短信验证登录
+  async phoneLogin() {
+    const { ctx, app, service } = this
+    // 参数验证
+    ctx.validate({
+      phone: {
+        type: 'string',
+        required: true,
+        desc: '手机号',
+      },
+      code: {
+        type: 'number',
+        required: true,
+        desc: '验证码',
+      },
+    })
+    let { phone, code } = ctx.request.body
+    let user = await app.model.User.findOne({
+      where: {
+        phone,
+      },
+    })
+    //取出redis中的验证码
+    let res = await service.cache.get('code');
+    console.log("redis中的code" + res.toString())
+    console.log('code的值是' + code)
+    console.log(res.toString() == code.toString())
+    if(res.toString() !== code.toString()) {
+      ctx.throw(400, "验证码不正确")
+    }
+    if (!user) {
+      user = await app.model.User.create({
+        phone,
+        username:phone,
+        password: '123123',
+        avatar: 'https://student-m.oss-cn-hangzhou.aliyuncs.com/1ys38oajjeu8000.jpeg',
+        coin: 0
+      })
+      //ctx.throw(400, '该用户不存在')
+    }
+    user = JSON.parse(JSON.stringify(user))
+    console.log(user)
+    // 生成token
+    user.token = ctx.getToken(user)
+    delete user.password
+
+    // 加入到存储中
+    if (!(await this.service.cache.set('user_' + user.id, user.token))) {
+      ctx.throw(400, '登录失败')
+    }
+    ctx.apiSuccess(user)
+  }
+
+  // 微信登录
+  async wxLogin() {
+    const { ctx, app } = this
+    // 参数验证
+    ctx.validate({
+      openId: {
+        type: 'string',
+        required: true,
+        desc: '微信识别id',
+      },
+      avatar: {
+        type: 'string',
+        required: true,
+        desc: ''
+      },
+      username:{
+        type: 'string',
+        required: true,
+        desc: ''
+      }
+    })
+    let { openId, avatar,username } = ctx.request.body
+    let user = await app.model.User.findOne({
+      where: {
+        wx_open_id: openId,
+        username:username
+      },
+    })
+    if (!user) {
+      user = await app.model.User.create({
+        wx_open_id: openId,
+        avatar: avatar,
+        username:username,
+        password:"123123"
+      })
+    }
+    user = JSON.parse(JSON.stringify(user))
+    // 生成token
+    user.token = ctx.getToken(user)
+    delete user.password
+    // 加入到存储中
+    if (!(await this.service.cache.set('user_' + user.id, user.token))) {
+      ctx.throw(400, '登录失败')
+    }
     ctx.apiSuccess(user)
   }
 

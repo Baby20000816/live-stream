@@ -16,6 +16,13 @@ module.exports = {
         comment: '用户名',
         unique: true,
       },
+      mobile: {
+        type: STRING(30),
+        allowNull: false,
+        defaultValue: '',
+        comment: '手机号',
+        unique: true,
+      },
       password: {
         type: STRING,
         allowNull: false,
@@ -36,6 +43,18 @@ module.exports = {
       },
       created_time: DATE,
       updated_time: DATE,
+      wx_open_id:{
+        type:STRING,
+        allowNull: true,
+        defaultValue:'',
+        comment:'微信openId'
+      },
+      phone:{
+        type:STRING,
+        allowNull: true,
+        defaultValue:'',
+        comment:'手机号'
+      }
     })
   },
 

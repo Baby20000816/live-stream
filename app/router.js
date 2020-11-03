@@ -15,6 +15,9 @@ module.exports = (app) => {
     // 用户登录
   router.post('/api/login', controller.api.user.login);
   router.post('/api/logout', controller.api.user.logout);
+  router.post('/api/sendcode', controller.api.sms.sendCode);
+  router.post('/api/phoneLogin', controller.api.user.phoneLogin);
+  router.post('/api/wxLogin', controller.api.user.wxLogin);
   router.post('/api/live/create', controller.api.live.save);
   router.post('/api/live/changestatus',controller.api.live.changeStatus);
 };

@@ -30,7 +30,7 @@ module.exports = (app) => {
     avatar: {
       type: STRING,
       allowNull: true,
-      defaultValue: '',
+      defaultValue: 'https://student-m.oss-cn-hangzhou.aliyuncs.com/1ys38oajjeu8000.jpeg',
       comment: '头像',
     },
     coin: {
@@ -46,6 +46,18 @@ module.exports = (app) => {
       },
     },
     updated_time: DATE,
+    wx_open_id:{
+      type:STRING,
+      allowNull: true,
+      defaultValue:'',
+      comment:'微信openId'
+    },
+    phone:{
+      type:STRING,
+      allowNull: true,
+      defaultValue:'',
+      comment:'手机号'
+    }
   })
   return User
 }
