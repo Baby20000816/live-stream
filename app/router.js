@@ -10,6 +10,7 @@ module.exports = (app) => {
   
   io.of('/').route('test', io.controller.nsp.test);
   io.of('/').route('joinLive', io.controller.live.joinLive);
+  io.of('/').route('leaveLive', io.controller.live.leaveLive);
   router.get("/", controller.home.index);
   router.get("/list", controller.home.list); 
   router.get('/api/user/info', controller.api.user.info);
