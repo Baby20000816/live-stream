@@ -4,7 +4,12 @@
  * @param {Egg.Application} app - egg application
  */
 module.exports = (app) => {
-  const { router, controller } = app;
+  const { router, controller,io } = app;
+
+  // router.get('/admin',controller.admin.home.index)
+  
+  io.of('/').route('test', io.controller.nsp.test);
+  io.of('/').route('joinLive', io.controller.live.joinLive);
   router.get("/", controller.home.index);
   router.get("/list", controller.home.list); 
   router.get('/api/user/info', controller.api.user.info);

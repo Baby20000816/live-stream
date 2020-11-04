@@ -89,6 +89,22 @@ module.exports = (appInfo) => {
     }
   };
 
+  config.io = {
+    init:{
+      wsEngine:'ws',
+    },
+    namespace:{
+      '/':{
+        connectionMiddleware:[],
+        packetMiddleware:[],
+      },
+    },
+    redis:{
+      host: '127.0.0.1',
+      port: 6379,
+      db: 0,
+    }
+  }
 
   config.valparams = {
     locale: 'zh-cn',
@@ -105,7 +121,6 @@ module.exports = (appInfo) => {
     secret: 'qhdgw@45ncashdaksh2!#@3nxjdas*_672',
   }
 
-
   // redis存储
   config.redis = {
     client: {
@@ -115,7 +130,6 @@ module.exports = (appInfo) => {
       db: 2,
     },
   }
-
   return {
     ...config,
     ...userConfig,
