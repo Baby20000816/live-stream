@@ -241,6 +241,49 @@ class UserController extends Controller {
     ctx.apiSuccess(user)
   }
 
+    //直播间发送弹幕
+    async comment(){
+      const { ctx, app, service, helper } = this
+      const nsp = app.io.of('/')
+      //接受参数
+      const message = ctx.args[0] || {}
+      //当前连接
+      const socket = ctx.socket
+      const id = socket.id
+  
+      let { live_id,token,data}= message
+      if(!data){
+        socket.emit(id,ctx.helper.parseMsg('error','评论内容不能为空'))
+        return
+      }
+      //验证用户token
+      let user = await this.checkToken(token)
+      if(!user){
+        return
+      }
+      //验证当前直播间是否存在或是否处于直播中
+      let msg = await service.live.checkStatus(live_id)
+      if(msg){
+        socket.emit(id,ctx.helper.parseMsg('error',msg))
+        return
+      }
+  
+      const room = 'live_' + live_id
+      nsp.to(room).emit('comment',{
+        user:{
+          id:user.id,
+          name:user.nickname || user.username,
+          avatar:user.avatar,
+        },
+        id:ctx.randomString(10),
+        content:data,
+      })
+      app.model.Comment.create({
+        content:data,
+        live_id,
+        user_id:user.id,
+      })
+    }    
 }
 
 module.exports = UserController
