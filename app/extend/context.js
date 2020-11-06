@@ -44,5 +44,29 @@ module.exports = {
     let userAgent = this.request.header['user-agent'].toLowerCase();
     let pat_phone = /ipad|iphone os|midp|rv:1.2.3.4|ucweb|android|windows ce|windows mobile/;
     return pat_phone.test(userAgent);
+},
+ // 渲染公共模板
+ async renderTemplate(params = {}) {
+  // 获取cookie中的消息提示（闪存）
+  let toast = this.cookies.get('toast',{
+      // 中文需要解密
+      encrypt: true
+  });
+  // 合并到参数中
+  params.toast = toast ? JSON.parse(toast) : null
+  // 渲染公共模板
+  return await this.render('admin/common/template.html', params)
+},
+// 消息提示
+toast(msg,type = 'danger'){
+  // 设置消息提示到cookie中
+  this.cookies.set('toast',JSON.stringify({
+      msg,type
+  }),{
+      // 过期时间
+      maxAge: 1500, 
+      // 中文需要加密
+      encrypt: true
+  });
 }
 }

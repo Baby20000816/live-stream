@@ -31,4 +31,6 @@ module.exports = (app) => {
   router.post('/api/live/changestatus',controller.api.live.changeStatus);
 
   router.get('/test',controller.admin.test.page);
+  router.get('/admin/manager/create',controller.admin.manager.create);
+  router.post('/admin/manager',controller.admin.manager.save);
 };
