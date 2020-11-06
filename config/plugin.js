@@ -22,8 +22,12 @@ module.exports = {
     enable: true,
     package: 'egg-redis',
   },
-  io: {
+  io: { 
     enable: true,
     package: 'egg-socket.io',
+  },
+  nunjucks: {
+    enable: true,
+    package: 'egg-view-nunjucks',
   },
 }

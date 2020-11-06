@@ -130,6 +130,11 @@ module.exports = (appInfo) => {
       db: 2,
     },
   }
+  config.view = {
+    mapping: {
+      '.html': 'nunjucks',
+    },
+  };
   return {
     ...config,
     ...userConfig,

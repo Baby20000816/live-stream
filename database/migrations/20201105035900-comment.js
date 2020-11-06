@@ -39,7 +39,7 @@ module.exports = {
         onDelete:'cascade',
         onUpdate:'restrict',
       },
-      create_time:DATE,
+      created_time:DATE,
       updated_time:DATE,
     })
   },

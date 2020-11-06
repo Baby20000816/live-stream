@@ -53,7 +53,6 @@ class NspController extends Controller {
     }
     //进入直播间
     async joinLive() {
-        console.log("11111111111111111111111111111111111")
         const { ctx, app, service, helper } = this
         const nsp = app.io.of('/')
         //接受参数

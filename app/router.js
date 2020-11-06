@@ -12,8 +12,8 @@ module.exports = (app) => {
   io.of('/').route('joinLive', io.controller.live.joinLive);
   io.of('/').route('leaveLive', io.controller.live.leaveLive);
   io.of('/').route('comment', io.controller.nsp.comment);
-
-
+  io.of('/').route('gift', io.controller.nsp.gift)
+  router.get('/api/gift/list', controller.api.gift.list)
   router.get("/", controller.home.index);
   router.get("/list", controller.home.list); 
   router.get('/api/user/info', controller.api.user.info);
@@ -29,4 +29,6 @@ module.exports = (app) => {
   router.post('/api/wxLogin', controller.api.user.wxLogin);
   router.post('/api/live/create', controller.api.live.save);
   router.post('/api/live/changestatus',controller.api.live.changeStatus);
+
+  router.get('/test',controller.admin.test.page);
 };

@@ -27,7 +27,7 @@ module.exports = {
         defaultValue:0,
         comment:'金币',
       },
-      create_time:DATE,
+      created_time:DATE,
       updated_time:DATE,
     })
   },

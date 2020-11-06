@@ -1,5 +1,7 @@
 'use strict'
 
+const await = require('await-stream-ready/lib/await')
+
 const Controller = require('egg').Controller
 
 class NspController extends Controller {
@@ -120,7 +122,7 @@ class NspController extends Controller {
     const { ctx, app, service, helper } = this
     const nsp = app.io.of('/')
     //接收参数
-    const message = ctx.args[0] || {}          
+    const message = ctx.args[0] || {}
     //当前连接
     const socket = ctx.socket
     const id = socket.id
@@ -169,7 +171,7 @@ class NspController extends Controller {
   }
 
   //直播间发送弹幕
-  async comment(){
+  async comment() {
     const { ctx, app, service, helper } = this
     const nsp = app.io.of('/')
     //接受参数
@@ -178,37 +180,95 @@ class NspController extends Controller {
     const socket = ctx.socket
     const id = socket.id
 
-    let { live_id,token,data}= message
-    if(!data){
-      socket.emit(id,ctx.helper.parseMsg('error','评论内容不能为空'))
+    let { live_id, token, data } = message
+    if (!data) {
+      socket.emit(id, ctx.helper.parseMsg('error', '评论内容不能为空'))
       return
     }
     //验证用户token
     let user = await this.checkToken(token)
-    if(!user){
+    if (!user) {
       return
     }
     //验证当前直播间是否存在或是否处于直播中
     let msg = await service.live.checkStatus(live_id)
-    if(msg){
-      socket.emit(id,ctx.helper.parseMsg('error',msg))
+    if (msg) {
+      socket.emit(id, ctx.helper.parseMsg('error', msg))
       return
     }
 
     const room = 'live_' + live_id
-    nsp.to(room).emit('comment',{
-      user:{
-        id:user.id,
-        name:user.nickname || user.username,
-        avatar:user.avatar,
+    nsp.to(room).emit('comment', {
+      user: {
+        id: user.id,
+        name: user.nickname || user.username,
+        avatar: user.avatar,
       },
-      id:ctx.randomString(10),
-      content:data,
+      id: ctx.randomString(10),
+      content: data,
     })
     app.model.Comment.create({
-      content:data,
+      content: data,
       live_id,
-      user_id:user.id,
+      user_id: user.id,
+    })
+  }
+
+  async gift() {
+    const { ctx, app, service, helper } = this
+    const nsp = app.io.of('/')
+    const message = ctx.args[0] || {}
+    const socket = ctx.socket
+    const id = socket.id
+    let { live_id, token, gift_id } = message
+
+    let user = await this.checkToken(token)
+    if (!user) {
+      return
+    }
+    let msg = await service.live.checkStatus(live_id)
+    if (msg) {
+      socket.emit(id, ctx.helper.parseMsg('error', msg))
+      return
+    }
+
+    const room = 'live_' + live_id
+
+    let gift = await app.model.Gift.findOne({
+      where: {
+        id: gift_id,
+      },
+    })
+    if (!gift) {
+      socket.emit(id, ctx.helper.parseMsg('error', '该礼物不存在'))
+      return
+    }
+    if (user.coin < gift.coin) {
+      socket.emit(id, ctx.helper.parseMsg('error', '金币不足，请先充值'))
+      return
+    }
+    user.coin -= gift.coin
+    await user.save()
+    app.model.LiveGift.create({
+      live_id,
+      user_id: user.id,
+      gift_id,
+    })
+
+    let live = await app.model.Live.findOne({
+      where: {
+        id: live_id
+      },
+    })
+    live.coin += gift.coin
+    live.save()
+    nsp.to(room).emit('gift', {
+      avatar: user.avatar,
+      username: user.nickname || user.username,
+      gift_name: gift.name,
+      gift_image: gift.image,
+      gift_coin: gift.coin,
+      num: 1
     })
   }
 }
