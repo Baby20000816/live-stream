@@ -1,8 +1,6 @@
-/* eslint-disable strict */
-/* eslint-disable no-unused-vars */
-const crypto = require('crypto');
-module.exports = app => {
-  const { INTEGER, STRING, DATE, ENUM, TEXT } = app.Sequelize;
+const crypto = require('crypto')
+module.exports = (app) => {
+  const { INTEGER, STRING, DATE, ENUM, TEXT } = app.Sequelize
 
   const Manager = app.model.define('manager', {
     id: {
@@ -23,19 +21,19 @@ module.exports = app => {
       defaultValue: '',
       comment: '密码',
       set(val) {
-        const hmac = crypto.createHash('sha256', app.config.crypto.secret);
-        hmac.update(val);
-        const hash = hmac.digest('hex');
-        this.setDataValue('password', hash);
+        const hmac = crypto.createHash('sha256', app.config.crypto.secret)
+        hmac.update(val)
+        let hash = hmac.digest('hex')
+        this.setDataValue('password', hash)
       },
     },
     created_time: {
       type: DATE,
       get() {
-        return app.formatTime(this.getDataValue('created_time'));
+        return app.formatTime(this.getDataValue('created_time'))
       },
     },
     updated_time: DATE,
-  });
-  return Manager;
-};
+  })
+  return Manager
+}

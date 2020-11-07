@@ -1,4 +1,4 @@
-# live-stream-js
+# live-api
 
 
 

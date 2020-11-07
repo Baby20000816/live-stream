@@ -1,5 +1,5 @@
 {
-  "name": "live-stream-js",
+  "name": "live-api",
   "version": "1.0.0",
   "description": "",
   "private": true,
@@ -43,8 +43,8 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-live-stream-js --sticky",
-    "stop": "egg-scripts stop --title=egg-server-live-stream-js",
+    "start": "egg-scripts start --daemon --title=egg-server-live-stream-api  --sticky",
+    "stop": "egg-scripts stop --title=egg-server-live-stream-api",
     "dev": "egg-bin dev --sticky",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
@@ -61,6 +61,6 @@
     "type": "git",
     "url": ""
   },
-  "author": "ycshang",
+  "author": "wl",
   "license": "MIT"
 }
