@@ -17,10 +17,22 @@ module.exports = (appInfo) => {
 
 
   // add your middleware config here
-  config.middleware = ['errorHandler', 'auth']
+  config.middleware = ['errorHandler', 'auth', 'adminAuth', 'adminSidebar']
   
   config.auth = {
-    match: ['/api/live/create','/api/live/changestatus','/api/user/info','/api/logout'],
+    match: [
+      '/api/logout',
+      '/api/live/create',
+      '/api/live/changestatus',
+      '/api/gift/wxpay',
+      '/api/user/info',
+    ],
+  }
+  config.adminAuth = {
+    ignore: ['/api', '/admin/login', '/admin/loginevent'],
+  }
+  config.adminSidebar = {
+    ignore: ['/api', '/admin/login', '/admin/loginevent', '/public'],
   }
 
   // add your user config here
@@ -134,7 +146,34 @@ module.exports = (appInfo) => {
     mapping: {
       '.html': 'nunjucks',
     },
-  };
+  }
+ //session配置
+ config.session = {
+  renew: true,
+  key: 'EGG_SESS',
+  maxAge: 24 * 3600 * 1000 * 30, // 1 天
+  httpOnly: true,
+  encrypt: true,
+}
+
+//文件上传配置
+config.multipart = {
+  fileSize: '50mb',
+  mode: 'stream',
+  fileExtensions: [
+    '.xls',
+    '.txt',
+    '.jpg',
+    '.JPG',
+    '.png',
+    '.PNG',
+    '.gif',
+    '.GIF',
+    '.jpeg',
+    '.JPEG',
+  ], //上传的文件格式
+}
+
   return {
     ...config,
     ...userConfig,
