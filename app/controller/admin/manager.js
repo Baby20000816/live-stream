@@ -45,6 +45,15 @@ class ManagerController extends Controller {
 
         ctx.apiSuccess(manager)
     }
+
+      // 管理员列表
+  async index() {
+    const { ctx, app } = this
+    let data = await ctx.page('Manager')
+    await ctx.render('admin/manager/index.html', {
+      data,
+    })
+  }
 }
 
 module.exports = ManagerController;
