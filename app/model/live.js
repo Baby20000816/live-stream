@@ -1,6 +1,7 @@
-'use strict'
-module.exports = (app) => {
-  const { STRING, INTEGER, DATE, ENUM, TEXT } = app.Sequelize
+/* eslint-disable no-unused-vars */
+'use strict';
+module.exports = app => {
+  const { STRING, INTEGER, DATE, ENUM, TEXT } = app.Sequelize;
 
 
   const Live = app.model.define('live', {
@@ -60,18 +61,18 @@ module.exports = (app) => {
     created_time: {
       type: DATE,
       get() {
-        return app.formatTime(this.getDataValue('created_time'))
+        return app.formatTime(this.getDataValue('created_time'));
       },
     },
     updated_time: DATE,
-  })
+  });
 
 
   // 关联关系
-  Live.associate = function (models) {
+  Live.associate = function(models) {
     // 关联主播
-    Live.belongsTo(app.model.User)
-  }
-  
-  return Live
-}
+    Live.belongsTo(app.model.User);
+  };
+
+  return Live;
+};

@@ -1,6 +1,6 @@
-# live-stream
+# live-stream-js
 
-live
+
 
 ## QuickStart
 

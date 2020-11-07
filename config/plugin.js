@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 /** @type Egg.EggPlugin */
 module.exports = {
   cors: {
@@ -33,4 +33,4 @@ module.exports = {
     enable: true,
     package: 'egg-tenpay',
   },
-}
+};

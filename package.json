@@ -1,7 +1,7 @@
 {
-  "name": "live-stream",
+  "name": "live-stream-js",
   "version": "1.0.0",
-  "description": "live",
+  "description": "",
   "private": true,
   "egg": {
     "declarations": true
@@ -43,8 +43,8 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "egg-scripts start --daemon --title=egg-server-live-stream --sticky",
-    "stop": "egg-scripts stop --title=egg-server-live-stream",
+    "start": "egg-scripts start --daemon --title=egg-server-live-stream-js --sticky",
+    "stop": "egg-scripts stop --title=egg-server-live-stream-js",
     "dev": "egg-bin dev --sticky",
     "debug": "egg-bin debug",
     "test": "npm run lint -- --fix && npm run test-local",
@@ -61,6 +61,6 @@
     "type": "git",
     "url": ""
   },
-  "author": "wjh2000",
+  "author": "ycshang",
   "license": "MIT"
 }

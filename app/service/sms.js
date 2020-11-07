@@ -1,60 +1,57 @@
+/* eslint-disable no-unused-vars */
 'use strict';
-const Service = require('egg').Service
+const Service = require('egg').Service;
 const SMSClient = require('@alicloud/sms-sdk');
 const await = require('await-stream-ready/lib/await');
 
 
 const config = {
-    AccessKeyId: 'LTAI4FcUiGZb75XGwiCC7Yzu', // 访问密钥编号
-    AccessKeySecret: 'ZX0hbGsO2aOAWUfGJlrL48Tkp0bfFQ', // 密钥
+  AccessKeyId: 'LTAI4GEYqEPww4sfKqMm72tU', // 阿里云key
+  AccessKeySecret: 'iMrqPWmyHkLBOdOa3WP7qh2R9Kk2HL', // 阿里云密钥
 };
 
 
-// 签名模板
+// 签名模板，注意修改
 const sign = {
   REG_CODE: {
-    SignName: "颜氏企业", 
-    TemplateCode: 'SMS_205393095', 
+    SignName: 'ABC商城',
+    TemplateCode: 'SMS_205403269',
   },
 };
-
 
 /**
  * 阿里云短信发送类
  */
-class SmsService extends Service { 
-
-
+class SmsService extends Service {
+  // eslint-disable-next-line jsdoc/check-param-names
   /**
    * 短信发送接口
    * @param {*} phone 发送手机号
    * @param {*} code 验证码
    */
   async sendCode(phone) {
-
-
     const { ctx, service } = this;
 
 
     const signCode = sign.REG_CODE;
     // 标注2：随机数生成方法，自己写一个即可
-    const codeRandom = Math.random().toFixed(6).slice(-6); 
-    console.log(codeRandom)
+    const codeRandom = Math.random().toFixed(6).slice(-6);
     const templateParam = JSON.stringify({ code: codeRandom.toString() });
-    service.cache.set('code', codeRandom, 60*5);
+    service.cache.set('code', codeRandom, 60 * 5);
     const accessKeyId = config.AccessKeyId;
     const secretAccessKey = config.AccessKeySecret;
     const smsClient = new SMSClient({ accessKeyId, secretAccessKey });
 
-     // 实例化SDK
+
+    // 实例化SDK
     const params = {
-      //手机号
+      // 手机号
       PhoneNumbers: phone,
-      //签名
+      // 签名
       SignName: signCode.SignName,
-      //模板手机号
+      // 模板手机号
       TemplateCode: signCode.TemplateCode,
-      //验证码
+      // 验证码
       TemplateParam: templateParam,
     };
 
@@ -65,18 +62,13 @@ class SmsService extends Service {
         return { code: codeRandom, sta: 1 };
       }
       return { msg: '操作失败', sta: -1 };
-
-
     } catch (err) {
-
-
-      if (err.data.Code === 'isv.BUSINESS_LIMIT_CONTROL') { // 短信限制
+      if (err.data.Code === 'isv.BUSINESS_LIMIT_CONTROL') {
+        // 短信限制
         return { msg: err.data.Message.match(/(\S*)Permits/)[1], sta: 0 };
       }
-      return { msg: '短信限制', sta: -2 };
+      return { msg: '操作失败', sta: -1 };
     }
-
-
   }
 
 
@@ -87,11 +79,14 @@ class SmsService extends Service {
    */
   async sendSms(smsClient, params) {
     return new Promise((resolve, reject) => {
-      smsClient.sendSMS(params).then(result => {
-        resolve(result);
-      }, ex => {
-        reject(ex);
-      });
+      smsClient.sendSMS(params).then(
+        result => {
+          resolve(result);
+        },
+        ex => {
+          reject(ex);
+        }
+      );
     });
   }
 }

@@ -1,86 +1,68 @@
+/* eslint-disable no-unused-vars */
 /* eslint valid-jsdoc: "off" */
-'use strict'
+'use strict';
 
+const NodeMediaServer = require('node-media-server');
 /**
  * @param {Egg.EggAppInfo} appInfo app info
  */
-const NodeMediaServer = require('node-media-server');
-module.exports = (appInfo) => {
+module.exports = appInfo => {
   /**
    * built-in config
    * @type {Egg.EggAppConfig}
    **/
-  const config = (exports = {})
+  const config = (exports = {});
 
   // use for cookie sign key, should change to your own and keep security
-  config.keys = appInfo.name + '_1604226229644_5400'
-
+  config.keys = appInfo.name + '_1604158088886_8645';
 
   // add your middleware config here
-  config.middleware = ['errorHandler', 'auth', 'adminAuth', 'adminSidebar']
-  
-  config.auth = {
-    match: [
-      '/api/logout',
-      '/api/live/create',
-      '/api/live/changestatus',
-      '/api/gift/wxpay',
-      '/api/user/info',
-    ],
-  }
+  config.middleware = [ 'errorHandler', 'auth', 'adminAuth', 'adminSidebar' ];
   config.adminAuth = {
-    ignore: ['/api', '/admin/login', '/admin/loginevent'],
-  }
+    ignore: [ '/api', '/admin/login', '/admin/loginevent' ],
+  };
   config.adminSidebar = {
-    ignore: ['/api', '/admin/login', '/admin/loginevent', '/public'],
-  }
+    ignore: [ '/api', '/admin/login', '/admin/loginevent', '/public' ],
+  };
 
   // add your user config here
   const userConfig = {
     // myAppName: 'egg',
-  }
-
-  config.mediaServer ={
-    rtmp:{
-      port: 23480,
-      chunk_size: 60000,
-      gop_cache: true,
-      ping: 30,
-      ping_timeout: 60,
+  };
+  config.auth = {
+    match: [
+      '/api/logout',
+      '/api/live/create',
+      '/api/user/info',
+      '/api/live/changestatus',
+    ],
+  };
+  config.view = {
+    mapping: {
+      '.html': 'nunjucks',
     },
-    http: {
-      port: 23481,
-      allow_origin: '*',
-    },
-    auth: {
-      play: true,
-      publish: true,
-      secret: 'nodemedia2017privatekey',
-    },
-  }
-  var nms = new NodeMediaServer(config.mediaServer)
-  nms.run();
-
+  };
   config.security = {
     // 关闭 csrf
     csrf: {
       headerName: 'x-csrf-token',
-      ignore: (ctx) => {
-        return ctx.request.url.startsWith('/api')
+      ignore: ctx => {
+        return ctx.request.url.startsWith('/api');
       },
     },
     // 跨域白名单
     // domainWhiteList: ['http://localhost:3000'],
-  }
+  };
   // 允许跨域的方法
   config.cors = {
     origin: '*',
     allowMethods: 'GET, PUT, POST, DELETE, PATCH',
-  }
+  };
+
   config.sequelize = {
     dialect: 'mysql',
     host: '127.0.0.1',
-    username: "root",
+    username: 'root',
     password: 'root',
     port: 3306,
     database: 'live_stream',
@@ -97,41 +79,22 @@ module.exports = (appInfo) => {
       updatedAt: 'updated_time',
       // deletedAt: 'deleted_time',
       // 所有驼峰命名格式化
-      underscored: true
-    }
+      underscored: true,
+    },
   };
-
-  config.io = {
-    init:{
-      wsEngine:'ws',
-    },
-    namespace:{
-      '/':{
-        connectionMiddleware:[],
-        packetMiddleware:[],
-      },
-    },
-    redis:{
-      host: '127.0.0.1',
-      port: 6379,
-      db: 8,
-    }
-  }
 
   config.valparams = {
     locale: 'zh-cn',
     throwError: true,
-  }
-
+  };
 
   config.crypto = {
     secret: 'qhdgw@45ncashdaksh2!#@3nxjdas*_672',
-  }
-
+  };
 
   config.jwt = {
     secret: 'qhdgw@45ncashdaksh2!#@3nxjdas*_672',
-  }
+  };
 
   // redis存储
   config.redis = {
@@ -139,43 +102,77 @@ module.exports = (appInfo) => {
       port: 6379, // Redis port
       host: '127.0.0.1', // Redis host
       password: '',
-      db: 2,
+      db: 0,
     },
-  }
-  config.view = {
-    mapping: {
-      '.html': 'nunjucks',
+  };
+  config.io = {
+    init: {
+      wsEngine: 'ws',
     },
-  }
- //session配置
- config.session = {
-  renew: true,
-  key: 'EGG_SESS',
-  maxAge: 24 * 3600 * 1000 * 30, // 1 天
-  httpOnly: true,
-  encrypt: true,
-}
+    namespace: {
+      '/': {
+        connectionMiddleware: [],
+        packetMiddleware: [],
+      },
+    },
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+      db: 1,
+    },
+  };
 
-//文件上传配置
-config.multipart = {
-  fileSize: '50mb',
-  mode: 'stream',
-  fileExtensions: [
-    '.xls',
-    '.txt',
-    '.jpg',
-    '.JPG',
-    '.png',
-    '.PNG',
-    '.gif',
-    '.GIF',
-    '.jpeg',
-    '.JPEG',
-  ], //上传的文件格式
-}
+  // 流媒体配置
+  config.mediaServer = {
+    rtmp: {
+      port: 23480,
+      chunk_size: 60000,
+      gop_cache: true,
+      ping: 30,
+      ping_timeout: 60,
+    },
+    http: {
+      port: 23481,
+      allow_origin: '*',
+    },
+    auth: {
+      play: true,
+      publish: true,
+      secret: 'nodemedia2017privatekey',
+    },
+  };
+  // session配置
+  config.session = {
+    renew: true,
+    key: 'EGG_SESS',
+    maxAge: 24 * 3600 * 1000 * 30, // 1 天
+    httpOnly: true,
+    encrypt: true,
+  };
+
+  // 文件上传配置
+  config.multipart = {
+    fileSize: '50mb',
+    mode: 'stream',
+    fileExtensions: [
+      '.xls',
+      '.txt',
+      '.jpg',
+      '.JPG',
+      '.png',
+      '.PNG',
+      '.gif',
+      '.GIF',
+      '.jpeg',
+      '.JPEG',
+    ], // 上传的文件格式
+  };
+
+  const nms = new NodeMediaServer(config.mediaServer);
+  nms.run();
 
   return {
     ...config,
     ...userConfig,
-  }
-}
+  };
+};
